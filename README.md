@@ -1,6 +1,6 @@
 # ⚡ CineForge Replit: Cloud Cinema Review Sandbox
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](LICENSE)
 [![Track](https://img.shields.io/badge/Track-Replit_Partner_Track-orange.svg)](https://agentic-cinema.devpost.com)
 [![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.5_Flash-cyan.svg)](https://ai.google.dev)
 [![Replit](https://img.shields.io/badge/Replit-1--Click_Deploy-red.svg)](https://replit.com)
