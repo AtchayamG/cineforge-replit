@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CineForge Replit — Cloud Cinema Review Studio</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    body { font-family: 'Space Grotesk', sans-serif; background-color: #0c1017; color: #f1f5f9; }
+    .mono { font-family: 'JetBrains Mono', monospace; }
+    .glass { background: rgba(18, 24, 38, 0.85); backdrop-filter: blur(12px); border: 1px solid rgba(255, 106, 0, 0.22); }
+    .glow-replit { box-shadow: 0 0 25px rgba(255, 106, 0, 0.25); }
+  </style>
+</head>
+<body class="min-h-screen p-4 sm:p-8 flex flex-col justify-between">
+  <div class="max-w-6xl w-full mx-auto space-y-6">
+    <!-- Header -->
+    <header class="glass p-6 rounded-2xl flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+      <div class="space-y-1">
+        <div class="flex items-center gap-3">
+          <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-orange-500 to-red-600 text-white flex items-center justify-center font-bold text-xl">⚡</div>
+          <h1 class="text-2xl font-bold tracking-tight text-white">CineForge Replit</h1>
+          <span class="mono text-xs px-2.5 py-1 rounded-full bg-orange-500/10 border border-orange-500/30 text-orange-400 font-semibold">Replit Track</span>
+        </div>
+        <p class="text-xs text-slate-400">A zero-setup director-to-shot-packet workflow, built and published on Replit</p>
+      </div>
+      <div class="flex items-center gap-3 text-xs mono">
+        <span id="replit-badge" class="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-400">REPLIT: CHECKING RUNTIME</span>
+        <span id="mode-badge" class="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300">MODE: DEMO FIXTURES</span>
+        <a href="/docs" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">API Docs</a>
+      </div>
+    </header>
+
+    <!-- Main 2-Column Grid -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <!-- Left: Collaborative Script Editor & Director Notes -->
+      <div class="glass p-6 rounded-2xl space-y-5">
+        <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-orange-400">1. Collaborative Script & Director Notes</h2>
+          <span class="mono text-[11px] text-slate-400">Live Replit Workspace</span>
+        </div>
+
+        <div class="space-y-3">
+          <div>
+            <label class="text-xs mono text-slate-300 block mb-1">Scene Title & Slugline:</label>
+            <input type="text" id="scene-title" value="Scene 1: Sector 9 Atmospheric Breach" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs mono text-white focus:outline-none focus:border-orange-400">
+          </div>
+
+          <div>
+            <label class="text-xs mono text-slate-300 block mb-1">Working Script Draft:</label>
+            <textarea id="script-draft" rows="4" class="w-full bg-slate-900 border border-slate-700 rounded-xl p-3 text-xs mono text-white focus:outline-none focus:border-orange-400">EXT. NEO-TOKYO RUNWAY - NIGHT (RAIN)
+Maya Vance looks at the holographic telemetry.
+MAYA: Echo, re-run the quantum telemetry. Sector 9 was supposed to stay online.
+ECHO: Signal integrity is down by 42%. Something is overriding the core.</textarea>
+          </div>
+
+          <div>
+            <label class="text-xs mono text-slate-300 block mb-1">Human Director's Real-Time Instruction:</label>
+            <input type="text" id="director-instruction" value="Add cinematic tension, Panavision 35mm anamorphic camera cues, and heighten Maya's urgency." class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-xs mono text-white focus:outline-none focus:border-orange-400">
+          </div>
+
+          <button id="run-btn" onclick="runCoDirector()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-bold text-xs mono tracking-wider transition-all glow-replit">
+            ⚡ Forge with Gemini 2.5 & Save Review Snapshot
+          </button>
+        </div>
+
+        <!-- Replit Container Status Card -->
+        <div id="replit-env-box" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs mono space-y-1">
+          <span class="text-slate-400 text-[11px] font-semibold block">Verifiable Runtime Metadata:</span>
+          <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
+            <div><span>Slug: </span><b class="text-orange-400" id="env-slug">cineforge-replit-studio</b></div>
+            <div><span>Runtime: </span><span class="text-slate-400" id="env-runtime">Checking…</span></div>
+            <div><span>Published: </span><span class="text-emerald-400" id="env-published">Checking…</span></div>
+            <div><span>Snapshots: </span><span class="text-white" id="env-snapshots">0 active</span></div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Right: Gemini Co-Director Output & Review Packet -->
+      <div class="glass p-6 rounded-2xl space-y-5">
+        <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
+          <h2 class="text-sm font-bold uppercase tracking-wider text-orange-400">2. Gemini Co-Director Review Packet</h2>
+          <span class="mono text-[11px] text-slate-400">Gemini 2.5 Flash</span>
+        </div>
+
+        <div id="staging-box" class="space-y-4">
+          <div class="p-4 rounded-xl bg-slate-900/60 border border-slate-800 text-center text-slate-400 text-xs mono">
+            Enter a scene and director note to produce an inspectable shot packet and an in-session review snapshot.
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <footer class="text-center py-6 text-xs mono text-slate-500">
+    CineForge Replit • Google Cloud Agentic Cinema Hackathon • Replit Partner Track
+  </footer>
+
+  <script>
+    const escapeHTML = (value) => String(value ?? '').replace(/[&<>'"]/g, char => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
+    }[char]));
+
+    async function loadRuntimeEvidence() {
+      try {
+        const response = await fetch('/api/v1/forge/replit/environment');
+        const env = await response.json();
+        document.getElementById('env-slug').innerText = env.repl_slug || 'local';
+        document.getElementById('env-runtime').innerText = env.is_replit_cloud ? 'Replit' : 'Local verification';
+        document.getElementById('env-published').innerText = env.is_published_deployment ? 'Yes' : 'No';
+        document.getElementById('env-snapshots').innerText = `${env.review_snapshots_active || 0} active`;
+        document.getElementById('replit-badge').innerText = env.is_published_deployment
+          ? 'REPLIT: PUBLISHED APP'
+          : (env.is_replit_cloud ? 'REPLIT: DEV RUNTIME' : 'REPLIT: LOCAL VERIFICATION');
+      } catch (_) {
+        document.getElementById('replit-badge').innerText = 'REPLIT: STATUS UNAVAILABLE';
+      }
+    }
+
+    async function runCoDirector() {
+      const btn = document.getElementById('run-btn');
+      btn.innerText = 'Forging the review packet…';
+      btn.disabled = true;
+
+      const title = document.getElementById('scene-title').value;
+      const script = document.getElementById('script-draft').value;
+      const instruction = document.getElementById('director-instruction').value;
+
+      try {
+        const res = await fetch('/api/v1/forge/collaborate', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ scene_title: title, working_script: script, director_instruction: instruction })
+        });
+        const data = await res.json();
+        if (!res.ok || data.status === 'LIVE_ERROR') throw new Error(data.error || 'The co-director request failed.');
+        const col = data.gemini_collaboration || {};
+        const cam = col.camera_staging || {};
+        const stage = data.replit_staging || {};
+        const reviewLink = stage.review_url
+          ? `<a href="${escapeHTML(stage.review_url)}" target="_blank" class="text-cyan-300 hover:underline block truncate">${escapeHTML(stage.review_url)}</a>`
+          : '<span class="text-slate-300">Available in this running session; no public URL is claimed in local mode.</span>';
+
+        document.getElementById('staging-box').innerHTML = `
+          <div class="p-4 rounded-xl bg-slate-900 border border-slate-800 space-y-3 mono text-xs">
+            <div class="flex items-center justify-between border-b border-slate-800 pb-2">
+              <span class="text-xs font-bold text-orange-400">● ${escapeHTML(col.enhanced_slugline || title)}</span>
+              <span class="text-[10px] text-slate-400">${escapeHTML(data.measured_latency_ms)} ms</span>
+            </div>
+            <div class="p-2.5 rounded-lg bg-orange-950/30 border border-orange-900/40 text-[11px] text-orange-200">
+              <b>Co-Director Note:</b> ${escapeHTML(col.co_director_commentary || 'Shot packet ready for review.')}
+            </div>
+            <div class="space-y-1.5 text-[11px]">
+              <span class="text-white font-semibold block">Dialogue Refinements:</span>
+              ${(col.dialogue_refinements || []).map(d => `
+                <div class="p-2 rounded bg-slate-950 border border-slate-850">
+                  <span class="text-cyan-300 font-bold">${escapeHTML(d.character)}:</span> "${escapeHTML(d.line)}"
+                  <span class="block text-[10px] text-slate-400 mt-0.5"><i>Delivery:</i> ${escapeHTML(d.delivery_note)}</span>
+                </div>
+              `).join('')}
+            </div>
+            <div class="p-2.5 rounded-lg bg-slate-950 border border-slate-800 space-y-1 text-[11px]">
+              <span class="text-yellow-400 font-semibold block">Camera & Lighting:</span>
+              <div class="text-slate-300 space-y-0.5">
+                <div><b>Lens:</b> ${escapeHTML(cam.lens_spec || '35mm Anamorphic')}</div>
+                <div><b>Lighting:</b> ${escapeHTML(cam.lighting_setup || 'Cyan key, magenta rim')}</div>
+                <div><b>Movement:</b> ${escapeHTML(cam.camera_movement || 'Slow dolly-in')}</div>
+              </div>
+            </div>
+            <div class="p-2.5 rounded-lg bg-blue-950/40 border border-blue-900/50 space-y-1 text-[11px]">
+              <span class="text-blue-300 font-semibold block">Review snapshot: ${escapeHTML(stage.snapshot_id || 'created')}</span>
+              ${reviewLink}
+              <span class="text-[10px] text-slate-400 block mt-0.5">${escapeHTML(stage.persistence || 'in_memory_until_restart')} • ${escapeHTML(stage.environment || 'current runtime')}</span>
+            </div>
+          </div>`;
+        await loadRuntimeEvidence();
+      } catch (err) {
+        document.getElementById('staging-box').innerHTML = `<div class="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-200 text-xs mono">${escapeHTML(err.message)}</div>`;
+      } finally {
+        btn.innerText = '⚡ Forge with Gemini 2.5 & Save Review Snapshot';
+        btn.disabled = false;
+      }
+    }
+
+    loadRuntimeEvidence();
+  </script>
+</body>
+</html>

@@ -1,0 +1,28 @@
+modules = ["python-3.11"]
+
+[nix]
+channel = "stable-24_05"
+
+[deployment]
+run = ["python", "backend/run_backend.py"]
+deploymentTarget = "cloudrun"
+
+[env]
+PORT = "8004"
+HOST = "0.0.0.0"
+PYTHONPATH = "backend"
+
+[[ports]]
+localPort = 8004
+externalPort = 80
+
+[workflows]
+runButton = "CineForge Studio"
+
+[[workflows.workflow]]
+name = "CineForge Studio"
+author = "agentic-cinema"
+
+[[workflows.workflow.tasks]]
+task = "shell.exec"
+args = "cd backend && pip install -r requirements.txt && python run_backend.py"
