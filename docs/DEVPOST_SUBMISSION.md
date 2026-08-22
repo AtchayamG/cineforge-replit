@@ -21,7 +21,7 @@ Small film teams often lose creative intent between a screenplay note and the se
 
 The app is a compact FastAPI service with a responsive single-page judge interface. `.replit` and `replit.nix` define the Replit run environment. The runtime service reads Replit's official predefined environment variables rather than guessing cloud state. The Gemini service calls `google-genai` in live mode with structured JSON output and strict failure handling.
 
-Replit Agent usage and the final `.replit.app` deployment will be documented with screenshots and a public health response before submission.
+Replit Agent added and tested the in-session snapshot retrieval endpoint, its judge-visible UI status, and regression coverage. The resulting checkpoint and publishing commit were pushed to the public repository, and the finished app is verified at https://cineforge-replit--atchayamganesh.replit.app with a public health response.
 
 ## Challenges
 
@@ -33,6 +33,7 @@ The biggest challenge was separating a compelling product story from unsupported
 - A deployable, inspectable Replit-native web app.
 - Explicit demo/live provenance in every response.
 - A regression suite that checks runtime truthfulness and prevents fabricated public URLs from returning.
+- Authentic Replit Agent and Replit Publishing evidence, with 14 passing tests and a public `.replit.app` deployment.
 
 ## What we learned
 

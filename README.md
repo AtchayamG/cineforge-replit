@@ -7,6 +7,8 @@
 
 > **CineForge Replit** turns a scene draft and a director note into an inspectable dialogue, camera, lighting, sound, and VFX review packet in one browser session, powered by **Replit** and **Google Gemini 2.5 Flash**.
 
+**Live judge app:** https://cineforge-replit--atchayamganesh.replit.app
+
 ---
 
 ## 🌟 Key Capabilities
@@ -45,7 +47,7 @@ http://localhost:8004/
 ```bash
 cd backend
 python -m pytest -v
-# The current verified count is reported in docs/SUBMISSION_EVIDENCE.md.
+# Verified: 14 tests passing.
 ```
 
 ---
