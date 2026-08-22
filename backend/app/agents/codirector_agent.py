@@ -8,7 +8,7 @@ logger = logging.getLogger("cineforge.codirector")
 
 class CoDirectorAgent:
     """
-    Replit-hosted Co-Director Agent powered by Gemini 2.5 Flash.
+    Replit-hosted Co-Director Agent powered by Gemini 3.7 Flash.
     Engages in real-time script refinement, camera lens suggestions,
     VFX prompt generation, and instant 1-click preview staging.
     """

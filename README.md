@@ -5,7 +5,7 @@
 [![Google Gemini](https://img.shields.io/badge/AI-Google_Gemini_2.5_Flash-cyan.svg)](https://ai.google.dev)
 [![Replit](https://img.shields.io/badge/Replit-1--Click_Deploy-red.svg)](https://replit.com)
 
-> **CineForge Replit** turns a scene draft and a director note into an inspectable dialogue, camera, lighting, sound, and VFX review packet in one browser session, powered by **Replit** and **Google Gemini 2.5 Flash**.
+> **CineForge Replit** turns a scene draft and a director note into an inspectable dialogue, camera, lighting, sound, and VFX review packet in one browser session, powered by **Replit** and **Google Gemini 3.7 Flash**.
 
 **Live judge app:** https://cineforge-replit--atchayamganesh.replit.app
 
@@ -13,7 +13,7 @@
 
 ## 🌟 Key Capabilities
 - **⚡ Replit-Native Execution**: `.replit` and `replit.nix` define the reproducible run environment; the submitted evaluator is published directly on Replit.
-- **🤖 Gemini 2.5 Co-Director**: The Google GenAI SDK refines dialogue and produces camera, lighting, sound, and visual-staging guidance.
+- **🤖 Gemini 3.7 Co-Director**: The Google GenAI SDK refines dialogue and produces camera, lighting, sound, and visual-staging guidance.
 - **🎬 Review Snapshots**: Each run creates an explicitly in-memory review snapshot; no source-control branch or durable collaboration feature is implied.
 - **🛡️ Honest Mode Separation**: Transparently switches between live Google Gemini calls and deterministic demo fixtures with verifiable evidence source metadata.
 

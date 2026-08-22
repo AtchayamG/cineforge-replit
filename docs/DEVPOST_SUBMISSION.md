@@ -11,7 +11,7 @@ Small film teams often lose creative intent between a screenplay note and the se
 ## What it does
 
 - Accepts a scene draft and a human director instruction.
-- Uses Gemini 2.5 Flash through the official Google GenAI SDK to produce structured creative guidance.
+- Uses Gemini 3.7 Flash through the official Google GenAI SDK to produce structured creative guidance.
 - Presents dialogue, camera, lighting, sound, and visual-staging decisions together for human review.
 - Creates a clearly labeled in-session review snapshot.
 - Exposes runtime evidence showing whether the process is running in Replit development or as a published Replit App.
@@ -45,4 +45,4 @@ Durable review packets, authenticated project rooms, exportable shot lists, and 
 
 ## Technologies
 
-Replit Agent, Replit Publishing, Python 3.11, FastAPI, Google GenAI SDK, Gemini 2.5 Flash, HTML, Tailwind CSS, and Pytest.
+Replit Agent, Replit Publishing, Python 3.11, FastAPI, Google GenAI SDK, Gemini 3.7 Flash, HTML, Tailwind CSS, and Pytest.

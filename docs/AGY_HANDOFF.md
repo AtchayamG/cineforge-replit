@@ -27,8 +27,8 @@ python run_backend.py
 
 ## 4. Remaining Human Actions
 - Fork / import `Track5_Replit_CineForge` to Replit to verify the 1-click run button in Replit Cloud.
-- Supply `GEMINI_API_KEY` as a Replit secret to execute live Gemini 2.5 Flash calls.
+- Supply `GEMINI_API_KEY` as a Replit secret to execute live Gemini 3.7 Flash calls.
 
 ## 5. Codex Truthfulness Audit
 
-The original handoff overstated multiplayer collaboration, branch staging, and deployment readiness. Codex removed simulated peer counts and invented Replit URLs, replaced them with in-session review snapshots, upgraded the configured model to Gemini 2.5 Flash, and marked Replit Agent evidence plus direct Replit publishing as mandatory blockers until verified.
+The original handoff overstated multiplayer collaboration, branch staging, and deployment readiness. Codex removed simulated peer counts and invented Replit URLs, replaced them with in-session review snapshots, and later upgraded the configured model to Gemini 3.7 Flash. Replit Agent evidence and direct Replit publishing have since been verified.

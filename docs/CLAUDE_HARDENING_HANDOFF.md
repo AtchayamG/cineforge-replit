@@ -115,7 +115,7 @@ No install-on-every-run step was added. See Risks for the pre-existing one.
 ### 6. `imagen3_vfx_prompt` renamed
 
 Renamed to `vfx_image_prompt` in the Gemini request schema and the demo fixture. The
-field is and always was a **text prompt string** produced by Gemini 2.5 Flash; no Imagen
+field is and always was a **text prompt string** produced by Gemini (currently Gemini 3.7 Flash); no Imagen
 3 call is made anywhere in the codebase, so the old name implied a model integration that
 does not exist.
 

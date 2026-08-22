@@ -8,7 +8,7 @@
 ## 1. System Summary
 - **Track:** Replit Partner Track
 - **Runtime Port:** 8004
-- **Core Technology:** Replit runtime + Google Gemini 2.5 Flash (`google-genai` SDK) + FastAPI
+- **Core Technology:** Replit runtime + Google Gemini 3.7 Flash (`google-genai` SDK) + FastAPI
 - **Web UI Location:** `http://localhost:8004/` (served from `backend/app/static/index.html`)
 
 ---

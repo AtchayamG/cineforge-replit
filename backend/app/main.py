@@ -13,7 +13,7 @@ logger = logging.getLogger("cineforge.main")
 app = FastAPI(
     title="CineForge Replit Studio API",
     version="1.0.0",
-    description="Cloud cinema review sandbox powered by Replit and Google Gemini 2.5 Flash."
+    description="Cloud cinema review sandbox powered by Replit and Google Gemini 3.7 Flash."
 )
 
 # Public read-only demo: no cookies or Authorization headers are used, so the

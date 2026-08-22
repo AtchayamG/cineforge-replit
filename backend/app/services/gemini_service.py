@@ -9,7 +9,7 @@ logger = logging.getLogger("cineforge.gemini")
 
 class GeminiService:
     """
-    Google GenAI SDK & Gemini 2.5 Flash integration service for CineForge.
+    Google GenAI SDK & Gemini 3.7 Flash integration service for CineForge.
     Provides real-time co-direction, collaborative screenplay enhancement, camera direction,
     and instantaneous visual staging prompt compilation.
     """

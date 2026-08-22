@@ -61,7 +61,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
           </div>
 
           <button id="run-btn" onclick="runCoDirector()" class="w-full py-2.5 rounded-xl bg-gradient-to-r from-orange-500 to-red-600 hover:from-orange-400 hover:to-red-500 text-white font-bold text-xs mono tracking-wider transition-all glow-replit">
-            ⚡ Forge with Gemini 2.5 & Save Review Snapshot
+            ⚡ Forge with Gemini 3.7 & Save Review Snapshot
           </button>
         </div>
 
@@ -81,7 +81,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
       <div class="glass p-6 rounded-2xl space-y-5">
         <div class="border-b border-slate-800 pb-3 flex items-center justify-between">
           <h2 class="text-sm font-bold uppercase tracking-wider text-orange-400">2. Gemini Co-Director Review Packet</h2>
-          <span class="mono text-[11px] text-slate-400">Gemini 2.5 Flash</span>
+          <span class="mono text-[11px] text-slate-400">Gemini 3.7 Flash</span>
         </div>
 
         <div id="staging-box" class="space-y-4">
@@ -208,7 +208,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
       } catch (err) {
         document.getElementById('staging-box').innerHTML = `<div class="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-200 text-xs mono">${escapeHTML(err.message)}</div>`;
       } finally {
-        btn.innerText = '⚡ Forge with Gemini 2.5 & Save Review Snapshot';
+        btn.innerText = '⚡ Forge with Gemini 3.7 & Save Review Snapshot';
         btn.disabled = false;
       }
     }
