@@ -2,7 +2,7 @@ import os
 import time
 import hashlib
 import logging
-from typing import Dict, Any, List
+from typing import Dict, Any, Optional
 from app.config import settings
 
 logger = logging.getLogger("cineforge.replit_env")
@@ -59,5 +59,9 @@ class ReplitEnvironmentService:
         }
         self.review_snapshots[snapshot_id] = snapshot
         return snapshot
+
+    def get_review_snapshot(self, snapshot_id: str) -> Optional[Dict[str, Any]]:
+        """Retrieve a snapshot only while it remains in this process's session."""
+        return self.review_snapshots.get(snapshot_id)
 
 replit_service = ReplitEnvironmentService()

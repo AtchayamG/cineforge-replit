@@ -34,6 +34,17 @@ async def test_replit_review_snapshot():
     if res["review_url"]:
         assert res["review_url"].startswith("https://")
 
+def test_review_snapshot_can_be_retrieved_by_id():
+    created = replit_service.stage_scene_branch("room-retrieval", "Scene Retrieval", "Script Draft")
+    response = TestClient(app).get(f"/api/v1/forge/snapshots/{created['snapshot_id']}")
+    assert response.status_code == 200
+    assert response.json() == created
+
+def test_missing_review_snapshot_returns_not_found():
+    response = TestClient(app).get("/api/v1/forge/snapshots/review-does-not-exist")
+    assert response.status_code == 404
+    assert "current app session" in response.json()["detail"]
+
 @pytest.mark.asyncio
 async def test_codirector_agent_end_to_end():
     res = await codirector_agent.collaborate_and_stage(
@@ -61,6 +72,8 @@ def test_judge_ui_uses_truthful_snapshot_language():
     assert response.status_code == 200
     html = response.text
     assert "Save Review Snapshot" in html
+    assert "Retrieving snapshot" in html
+    assert "Review snapshot ID" in html
     assert "Active (3 Peers)" not in html
     assert "replit.app/stage/branch-01" not in html
 

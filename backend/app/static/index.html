@@ -169,17 +169,34 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
               </div>
             </div>
             <div class="p-2.5 rounded-lg bg-blue-950/40 border border-blue-900/50 space-y-1 text-[11px]">
-              <span class="text-blue-300 font-semibold block">Review snapshot: ${escapeHTML(stage.snapshot_id || 'created')}</span>
+              <span class="text-blue-300 font-semibold block">Review snapshot ID: ${escapeHTML(stage.snapshot_id || 'created')}</span>
               ${reviewLink}
+              <span id="snapshot-retrieval-status" class="text-[10px] text-slate-300 block mt-1">Retrieving snapshot…</span>
               <span class="text-[10px] text-slate-400 block mt-0.5">${escapeHTML(stage.persistence || 'in_memory_until_restart')} • ${escapeHTML(stage.environment || 'current runtime')}</span>
             </div>
           </div>`;
+        await retrieveSnapshot(stage.snapshot_id);
         await loadRuntimeEvidence();
       } catch (err) {
         document.getElementById('staging-box').innerHTML = `<div class="p-4 rounded-xl bg-red-950/40 border border-red-800 text-red-200 text-xs mono">${escapeHTML(err.message)}</div>`;
       } finally {
         btn.innerText = '⚡ Forge with Gemini 2.5 & Save Review Snapshot';
         btn.disabled = false;
+      }
+    }
+
+    async function retrieveSnapshot(snapshotId) {
+      const status = document.getElementById('snapshot-retrieval-status');
+      if (!status || !snapshotId) return;
+      try {
+        const response = await fetch(`/api/v1/forge/snapshots/${encodeURIComponent(snapshotId)}`);
+        const snapshot = await response.json();
+        if (!response.ok) throw new Error(snapshot.detail || 'Snapshot retrieval failed.');
+        status.innerText = `Retrieval: available in this session (${escapeHTML(snapshot.snapshot_id)})`;
+        status.className = 'text-[10px] text-emerald-300 block mt-1';
+      } catch (err) {
+        status.innerText = `Retrieval: unavailable — ${err.message}`;
+        status.className = 'text-[10px] text-red-300 block mt-1';
       }
     }
 

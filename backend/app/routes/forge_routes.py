@@ -44,3 +44,15 @@ async def stage_preview(request: StagingRequest):
         scene_title=request.scene_title,
         script_content=request.script_content
     )
+
+@router.get("/snapshots/{snapshot_id}")
+async def get_review_snapshot(snapshot_id: str):
+    """
+    Retrieves an existing in-session review snapshot by ID.
+
+    Snapshots are intentionally process-local and disappear when the app restarts.
+    """
+    snapshot = replit_service.get_review_snapshot(snapshot_id)
+    if snapshot is None:
+        raise HTTPException(status_code=404, detail="Review snapshot not found in the current app session.")
+    return snapshot
