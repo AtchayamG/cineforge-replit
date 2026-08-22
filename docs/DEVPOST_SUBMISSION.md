@@ -4,6 +4,12 @@
 
 CineForge Replit is a zero-setup director-to-shot-packet studio. A filmmaker pastes a scene, adds one creative instruction, and receives an inspectable review packet covering dialogue delivery, lensing, camera movement, lighting, sound, and visual-staging prompts—inside a web app built with Replit Agent and published directly on Replit.
 
+## Judge links
+
+- **Live application:** https://cineforge-replit--atchayamganesh.replit.app
+- **Public repository:** https://github.com/AtchayamG/cineforge-replit
+- **Demo video:** https://youtu.be/7SPam_1jiV4
+
 ## Inspiration
 
 Small film teams often lose creative intent between a screenplay note and the separate documents used by camera, performance, sound, and VFX collaborators. We wanted one shared, browser-based checkpoint that turns a director's intent into a concrete packet without requiring a local development environment.
