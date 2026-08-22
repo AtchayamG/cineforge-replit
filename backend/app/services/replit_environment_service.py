@@ -2,6 +2,7 @@ import os
 import time
 import hashlib
 import logging
+from collections import OrderedDict
 from typing import Dict, Any, Optional
 from app.config import settings
 
@@ -13,12 +14,16 @@ class ReplitEnvironmentService:
     Inspects host Replit runtime parameters and creates review snapshots inside
     the running app. It does not claim to create Replit branches or deployments.
     """
+    # Snapshots are public, unauthenticated, and process-local, so the store is a
+    # bounded FIFO: the oldest entry is evicted once the cap is reached.
+    MAX_REVIEW_SNAPSHOTS = 50
+
     def __init__(self):
         self.repl_id = settings.REPL_ID
         self.repl_slug = settings.REPL_SLUG
         self.repl_owner = settings.REPL_OWNER
         self.deployment_url = settings.replit_public_url
-        self.review_snapshots: Dict[str, Dict[str, Any]] = {}
+        self.review_snapshots: "OrderedDict[str, Dict[str, Any]]" = OrderedDict()
 
     def get_replit_status(self) -> Dict[str, Any]:
         """
@@ -36,6 +41,7 @@ class ReplitEnvironmentService:
             "one_click_run_status": "RUNNING_ON_REPLIT" if is_cloud else "CONFIG_PRESENT_NOT_CLOUD_VERIFIED",
             "public_url": self.deployment_url or None,
             "review_snapshots_active": len(self.review_snapshots),
+            "review_snapshots_max": self.MAX_REVIEW_SNAPSHOTS,
             "runtime_evidence": "Replit predefined environment variables" if is_cloud else "Local runtime inspection"
         }
 
@@ -55,9 +61,13 @@ class ReplitEnvironmentService:
             "created_at": time.time(),
             "environment": "Replit runtime" if settings.is_replit_environment else "Local verification runtime",
             "persistence": "in_memory_until_restart",
-            "message": "Review snapshot created in the current app session."
+            "message": "Review snapshot created in the current app session.",
+            "retention": f"most recent {self.MAX_REVIEW_SNAPSHOTS} snapshots in this process"
         }
         self.review_snapshots[snapshot_id] = snapshot
+        while len(self.review_snapshots) > self.MAX_REVIEW_SNAPSHOTS:
+            evicted, _ = self.review_snapshots.popitem(last=False)
+            logger.info("Evicted oldest review snapshot %s (cap %s).", evicted, self.MAX_REVIEW_SNAPSHOTS)
         return snapshot
 
     def get_review_snapshot(self, snapshot_id: str) -> Optional[Dict[str, Any]]:

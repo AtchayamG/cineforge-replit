@@ -28,7 +28,7 @@ class Settings(BaseSettings):
     
     # Replit Environment Telemetry (Auto-detected in Replit Container)
     REPL_ID: str = os.getenv("REPL_ID", "")
-    REPL_SLUG: str = os.getenv("REPL_SLUG", "cineforge-replit-studio")
+    REPL_SLUG: str = os.getenv("REPL_SLUG", "")
     REPL_OWNER: str = os.getenv("REPL_OWNER", "")
     REPLIT_DEPLOYMENT_URL: str = os.getenv("REPLIT_DEPLOYMENT_URL", "")
     REPLIT_DOMAINS: str = os.getenv("REPLIT_DOMAINS", "")

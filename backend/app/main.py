@@ -16,10 +16,12 @@ app = FastAPI(
     description="Cloud cinema review sandbox powered by Replit and Google Gemini 2.5 Flash."
 )
 
+# Public read-only demo: no cookies or Authorization headers are used, so the
+# wildcard origin is kept without credentialed CORS (which browsers reject anyway).
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
-    allow_credentials=True,
+    allow_origins=settings.CORS_ORIGINS,
+    allow_credentials=False,
     allow_methods=["*"],
     allow_headers=["*"],
 )

@@ -26,6 +26,7 @@ class CoDirectorAgent:
                 "agent": self.name,
                 "scene_title": scene_title,
                 "status": "LIVE_ERROR",
+                "runtime_mode": gemini_res.get("mode"),
                 "gemini_evidence_source": gemini_res.get("evidence_source"),
                 "error": gemini_res.get("error", "Gemini collaboration failed."),
                 "measured_latency_ms": round((time.time() - start) * 1000, 2)
@@ -43,6 +44,9 @@ class CoDirectorAgent:
             "agent": self.name,
             "scene_title": scene_title,
             "status": "REVIEW_PACKET_READY",
+            # The mode that actually executed, which can differ from the configured
+            # RUNTIME_MODE when no Gemini client could be initialized.
+            "runtime_mode": gemini_res.get("mode"),
             "gemini_collaboration": scene_data,
             "gemini_evidence_source": gemini_res.get("evidence_source"),
             "replit_staging": stage_res,

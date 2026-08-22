@@ -1,5 +1,8 @@
+import re
+
 import pytest
 from fastapi.testclient import TestClient
+from app.config import settings
 from app.services.gemini_service import gemini_service
 from app.services.replit_environment_service import replit_service
 from app.agents.codirector_agent import codirector_agent
@@ -24,6 +27,8 @@ async def test_gemini_collaborative_co_direction():
     assert "data" in res
     assert "dialogue_refinements" in res["data"]
     assert "camera_staging" in res["data"]
+    assert "vfx_image_prompt" in res["data"]
+    assert "imagen3_vfx_prompt" not in res["data"]
 
 @pytest.mark.asyncio
 async def test_replit_review_snapshot():
@@ -83,3 +88,54 @@ def test_local_runtime_does_not_invent_public_url():
     if not status["is_replit_cloud"]:
         assert status["is_published_deployment"] is False
         assert status["public_url"] is None
+
+
+def test_mode_badge_is_derived_from_backend_runtime_evidence():
+    """The MODE badge must never be a static claim baked into the page."""
+    html = TestClient(app).get("/").text
+    badge = re.search(r'<span id="mode-badge"[^>]*>(.*?)</span>', html, re.S)
+    assert badge is not None
+    assert badge.group(1).strip() == "MODE: CHECKING RUNTIME"
+    # It is populated from /api/v1/health.runtime_mode and the collaborate response.
+    assert "'/api/v1/health'" in html
+    assert "health.runtime_mode" in html
+    assert "applyModeBadge(data.runtime_mode)" in html
+
+
+def test_health_and_collaborate_report_the_same_runtime_mode():
+    health_mode = TestClient(app).get("/api/v1/health").json()["runtime_mode"]
+    collaborate = TestClient(app).post("/api/v1/forge/collaborate", json={}).json()
+    assert collaborate["runtime_mode"] in {"demo", "live", "live_error"}
+    # Without Gemini credentials the configured mode and the executed mode agree.
+    if not settings.is_gemini_configured:
+        assert health_mode == "demo"
+        assert collaborate["runtime_mode"] == "demo"
+
+
+def test_cors_is_not_credentialed_with_a_wildcard_origin():
+    response = TestClient(app).get("/api/v1/health", headers={"Origin": "https://judge.example"})
+    assert response.headers["access-control-allow-origin"] == "*"
+    assert "access-control-allow-credentials" not in response.headers
+
+
+def test_review_snapshots_are_bounded():
+    saved = replit_service.review_snapshots
+    replit_service.review_snapshots = type(saved)()
+    try:
+        cap = replit_service.MAX_REVIEW_SNAPSHOTS
+        created = [
+            replit_service.stage_scene_branch("room-bound", f"Scene {i}", "Script")["snapshot_id"]
+            for i in range(cap + 5)
+        ]
+        assert len(replit_service.review_snapshots) == cap
+        assert replit_service.get_review_snapshot(created[0]) is None
+        assert replit_service.get_review_snapshot(created[-1]) is not None
+        assert replit_service.get_replit_status()["review_snapshots_max"] == cap
+    finally:
+        replit_service.review_snapshots = saved
+
+
+def test_repl_slug_is_not_fabricated_off_replit():
+    status = replit_service.get_replit_status()
+    if not status["is_replit_cloud"]:
+        assert status["repl_slug"] == "local"

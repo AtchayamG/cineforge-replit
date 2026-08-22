@@ -63,7 +63,7 @@ class GeminiService:
                 "lighting_setup": "string",
                 "camera_movement": "string"
             }},
-            "imagen3_vfx_prompt": "string",
+            "vfx_image_prompt": "string",
             "sound_ambience": "string"
         }}
         """
@@ -120,7 +120,7 @@ class GeminiService:
                 "lighting_setup": "Dual-tone: Cyan key light from rain reflections, pulsing crimson rim from server exhaust",
                 "camera_movement": "Slow continuous dolly-in tracking Maya's boots through water puddles"
             },
-            "imagen3_vfx_prompt": "Cinematic 35mm film still, female detective Maya Vance in dark charcoal coat on rain-slicked runway, glowing holographic telemetry in hand, Panavision anamorphic lens flares, cyan and crimson neon lighting, photorealistic, 8k resolution",
+            "vfx_image_prompt": "Cinematic 35mm film still, female detective Maya Vance in dark charcoal coat on rain-slicked runway, glowing holographic telemetry in hand, Panavision anamorphic lens flares, cyan and crimson neon lighting, photorealistic, 8k resolution",
             "sound_ambience": "Heavy tropical downpour, sub-bass 60Hz ambient synth drone, digitized glitch warning pulses"
         }
 

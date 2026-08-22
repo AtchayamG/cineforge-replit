@@ -27,7 +27,7 @@
       </div>
       <div class="flex items-center gap-3 text-xs mono">
         <span id="replit-badge" class="px-3 py-1.5 rounded-lg bg-orange-500/10 border border-orange-500/30 text-orange-400">REPLIT: CHECKING RUNTIME</span>
-        <span id="mode-badge" class="px-3 py-1.5 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-300">MODE: DEMO FIXTURES</span>
+        <span id="mode-badge" class="px-3 py-1.5 rounded-lg bg-slate-800 border border-slate-700 text-slate-300">MODE: CHECKING RUNTIME</span>
         <a href="/docs" class="px-3 py-1.5 rounded-lg bg-slate-800 hover:bg-slate-700 text-slate-300 transition-colors">API Docs</a>
       </div>
     </header>
@@ -69,7 +69,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
         <div id="replit-env-box" class="p-3 rounded-xl bg-slate-950 border border-slate-800 text-xs mono space-y-1">
           <span class="text-slate-400 text-[11px] font-semibold block">Verifiable Runtime Metadata:</span>
           <div class="grid grid-cols-2 gap-2 text-[11px] text-slate-300">
-            <div><span>Slug: </span><b class="text-orange-400" id="env-slug">cineforge-replit-studio</b></div>
+            <div><span>Slug: </span><b class="text-orange-400" id="env-slug">checking…</b></div>
             <div><span>Runtime: </span><span class="text-slate-400" id="env-runtime">Checking…</span></div>
             <div><span>Published: </span><span class="text-emerald-400" id="env-published">Checking…</span></div>
             <div><span>Snapshots: </span><span class="text-white" id="env-snapshots">0 active</span></div>
@@ -101,6 +101,33 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
     const escapeHTML = (value) => String(value ?? '').replace(/[&<>'"]/g, char => ({
       '&': '&amp;', '<': '&lt;', '>': '&gt;', "'": '&#39;', '"': '&quot;'
     }[char]));
+
+    // MODE is never asserted by this page. It is set only from backend runtime
+    // evidence: /api/v1/health.runtime_mode on load, then corrected by the mode
+    // the collaborate response reports as having actually executed.
+    const MODE_BADGE_STYLES = {
+      live: ['MODE: LIVE GEMINI', 'bg-emerald-500/10 border-emerald-500/30 text-emerald-300'],
+      demo: ['MODE: DEMO FIXTURES', 'bg-amber-500/10 border-amber-500/30 text-amber-300'],
+      live_error: ['MODE: LIVE ERROR', 'bg-red-500/10 border-red-500/30 text-red-300']
+    };
+
+    function applyModeBadge(mode) {
+      const badge = document.getElementById('mode-badge');
+      const [label, style] = MODE_BADGE_STYLES[String(mode || '').toLowerCase()]
+        || ['MODE: UNAVAILABLE', 'bg-slate-800 border-slate-700 text-slate-300'];
+      badge.innerText = label;
+      badge.className = `px-3 py-1.5 rounded-lg border ${style}`;
+    }
+
+    async function loadModeBadge() {
+      try {
+        const response = await fetch('/api/v1/health');
+        const health = await response.json();
+        applyModeBadge(response.ok ? health.runtime_mode : null);
+      } catch (_) {
+        applyModeBadge(null);
+      }
+    }
 
     async function loadRuntimeEvidence() {
       try {
@@ -134,6 +161,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
           body: JSON.stringify({ scene_title: title, working_script: script, director_instruction: instruction })
         });
         const data = await res.json();
+        if (data.runtime_mode) applyModeBadge(data.runtime_mode);
         if (!res.ok || data.status === 'LIVE_ERROR') throw new Error(data.error || 'The co-director request failed.');
         const col = data.gemini_collaboration || {};
         const cam = col.camera_staging || {};
@@ -201,6 +229,7 @@ ECHO: Signal integrity is down by 42%. Something is overriding the core.</textar
     }
 
     loadRuntimeEvidence();
+    loadModeBadge();
   </script>
 </body>
 </html>
