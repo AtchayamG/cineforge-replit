@@ -26,3 +26,8 @@ author = "agentic-cinema"
 [[workflows.workflow.tasks]]
 task = "shell.exec"
 args = "cd backend && pip install -r requirements.txt && python run_backend.py"
+
+[userenv]
+
+[userenv.shared]
+GEMINI_RUNTIME_MODE = "live"
