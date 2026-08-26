@@ -18,6 +18,8 @@ class Settings(BaseSettings):
     
     # Google Gemini Configuration
     GEMINI_API_KEY: str = os.getenv("GEMINI_API_KEY", "")
+    GEMINI_RELAY_URL: str = os.getenv("GEMINI_RELAY_URL", "")
+    GEMINI_RELAY_TOKEN: str = os.getenv("GEMINI_RELAY_TOKEN", "")
     GOOGLE_CLOUD_PROJECT: str = os.getenv("GOOGLE_CLOUD_PROJECT", "")
     GOOGLE_CLOUD_LOCATION: str = os.getenv("GOOGLE_CLOUD_LOCATION", "global")
     GEMINI_MODEL: str = os.getenv("GEMINI_MODEL", "gemini-3.7-flash")
@@ -49,10 +51,16 @@ class Settings(BaseSettings):
 
     @property
     def is_gemini_configured(self) -> bool:
-        return bool(self.GEMINI_API_KEY or (self.GOOGLE_CLOUD_PROJECT and self.GOOGLE_CLOUD_LOCATION))
+        return bool(
+            (self.GEMINI_RELAY_URL and self.GEMINI_RELAY_TOKEN)
+            or self.GEMINI_API_KEY
+            or (self.GOOGLE_CLOUD_PROJECT and self.GOOGLE_CLOUD_LOCATION)
+        )
 
     @property
     def gemini_auth_type(self) -> str:
+        if self.GEMINI_RELAY_URL and self.GEMINI_RELAY_TOKEN:
+            return "cloud_run_relay"
         if self.GEMINI_API_KEY:
             return "api_key"
         if self.GOOGLE_CLOUD_PROJECT and self.GOOGLE_CLOUD_LOCATION:
@@ -61,6 +69,8 @@ class Settings(BaseSettings):
 
     @property
     def gemini_auth_evidence(self) -> str:
+        if self.GEMINI_RELAY_URL and self.GEMINI_RELAY_TOKEN:
+            return "Authenticated Cloud Run Vertex relay configured"
         if self.GEMINI_API_KEY:
             return "GEMINI_API_KEY environment variable present"
         if self.GOOGLE_CLOUD_PROJECT and self.GOOGLE_CLOUD_LOCATION:

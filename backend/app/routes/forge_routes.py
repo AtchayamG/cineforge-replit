@@ -1,7 +1,11 @@
-from fastapi import APIRouter, HTTPException
+import secrets
+
+from fastapi import APIRouter, Header, HTTPException
 from pydantic import BaseModel, Field
 from typing import Dict, Any, List, Optional
 from app.agents.codirector_agent import codirector_agent
+from app.config import settings
+from app.services.gemini_service import gemini_service
 from app.services.replit_environment_service import replit_service
 
 router = APIRouter(prefix="/forge", tags=["CineForge Replit Studio"])
@@ -25,6 +29,23 @@ async def collaborate_scene(request: CollaborationRequest):
         scene_title=request.scene_title,
         working_script=request.working_script,
         director_instruction=request.director_instruction
+    )
+
+@router.post("/relay/collaborate")
+async def relay_collaborate_scene(
+    request: CollaborationRequest,
+    x_cineforge_relay_token: str = Header(default=""),
+):
+    """Runs Gemini for the Replit backend through a token-protected Vertex relay."""
+    expected = settings.GEMINI_RELAY_TOKEN
+    if not expected:
+        raise HTTPException(status_code=503, detail="Gemini relay is not configured.")
+    if not secrets.compare_digest(x_cineforge_relay_token, expected):
+        raise HTTPException(status_code=401, detail="Invalid relay credential.")
+    return gemini_service.collaborate_on_scene(
+        request.scene_title,
+        request.working_script,
+        request.director_instruction,
     )
 
 @router.get("/replit/environment")

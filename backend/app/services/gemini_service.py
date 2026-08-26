@@ -2,6 +2,7 @@ import os
 import json
 import logging
 import time
+import httpx
 from typing import Dict, Any, List, Optional
 from app.config import settings
 
@@ -42,6 +43,10 @@ class GeminiService:
         return settings.GOOGLE_CLOUD_LOCATION
 
     def _init_client(self):
+        if settings.GEMINI_RELAY_URL and settings.GEMINI_RELAY_TOKEN:
+            self.client = None
+            logger.info("Configured authenticated Cloud Run Vertex relay.")
+            return
         if self.api_key or (self.project and self.location):
             try:
                 from google import genai
@@ -90,6 +95,35 @@ class GeminiService:
         """
 
         if self.runtime_mode == "live":
+            if settings.GEMINI_RELAY_URL and settings.GEMINI_RELAY_TOKEN:
+                try:
+                    response = httpx.post(
+                        f"{settings.GEMINI_RELAY_URL.rstrip('/')}/api/v1/forge/relay/collaborate",
+                        json={
+                            "scene_title": scene_title,
+                            "working_script": working_script,
+                            "director_instruction": director_instruction,
+                        },
+                        headers={"X-CineForge-Relay-Token": settings.GEMINI_RELAY_TOKEN},
+                        timeout=90.0,
+                    )
+                    response.raise_for_status()
+                    result = response.json()
+                    if result.get("success"):
+                        result["evidence_source"] = (
+                            f"Google Vertex AI ({self.model_name} live via authenticated Cloud Run relay)"
+                        )
+                    return result
+                except Exception as e:
+                    logger.error(f"Cloud Run Gemini relay failed: {e}")
+                    return {
+                        "success": False,
+                        "mode": "live_error",
+                        "evidence_source": f"Cloud Run Vertex relay ({self.model_name} live)",
+                        "error": str(e),
+                        "data": None,
+                    }
+
             # Attempt lazy init if credentials were provided after startup
             if self.client is None and settings.is_gemini_configured:
                 self._init_client()

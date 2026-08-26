@@ -178,7 +178,7 @@ def test_health_reports_gemini_and_replit_separately():
     assert "auth_type" in gemini_info
     assert "auth_evidence" in gemini_info
     assert gemini_info["model"] == settings.GEMINI_MODEL
-    assert gemini_info["auth_type"] in {"api_key", "vertex_ai", "none"}
+    assert gemini_info["auth_type"] in {"api_key", "cloud_run_relay", "vertex_ai", "none"}
     # Verify replit_environment provider is distinct and unaffected
     replit_info = payload["providers"]["replit_environment"]
     assert "detected" in replit_info
@@ -201,6 +201,55 @@ def test_gemini_auth_evidence_variants():
     vertex_auth = Settings(GEMINI_API_KEY="", GOOGLE_CLOUD_PROJECT="my-project", GOOGLE_CLOUD_LOCATION="global")
     assert vertex_auth.gemini_auth_type == "vertex_ai"
     assert "Vertex AI" in vertex_auth.gemini_auth_evidence
+
+    relay_auth = Settings(
+        GEMINI_RELAY_URL="https://relay.example",
+        GEMINI_RELAY_TOKEN="dummy-relay-token",
+        GEMINI_API_KEY="dummy-api-key",
+    )
+    assert relay_auth.gemini_auth_type == "cloud_run_relay"
+    assert relay_auth.is_gemini_configured is True
+    assert "dummy-relay-token" not in relay_auth.gemini_auth_evidence
+
+
+def test_relay_endpoint_requires_credential(monkeypatch):
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "expected-token")
+    assert TestClient(app).post("/api/v1/forge/relay/collaborate", json={}).status_code == 401
+    assert TestClient(app).post(
+        "/api/v1/forge/relay/collaborate",
+        json={},
+        headers={"X-CineForge-Relay-Token": "wrong-token"},
+    ).status_code == 401
+    accepted = TestClient(app).post(
+        "/api/v1/forge/relay/collaborate",
+        json={},
+        headers={"X-CineForge-Relay-Token": "expected-token"},
+    )
+    assert accepted.status_code == 200
+    assert accepted.json()["success"] is True
+
+
+def test_live_gemini_can_use_authenticated_relay(monkeypatch):
+    from unittest.mock import MagicMock
+
+    relay_response = MagicMock()
+    relay_response.json.return_value = {
+        "success": True,
+        "mode": "live",
+        "evidence_source": "Google Vertex AI (gemini-3.7-flash live via Cloud Run relay)",
+        "data": {"enhanced_slugline": "EXT. ORBITAL BACKLOT - BLUE HOUR"},
+        "latency_ms": 42,
+    }
+    monkeypatch.setattr("app.services.gemini_service.httpx.post", MagicMock(return_value=relay_response))
+    monkeypatch.setattr(settings, "GEMINI_RELAY_URL", "https://relay.example")
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "relay-token")
+    monkeypatch.setattr(gemini_service, "_runtime_mode", "live")
+
+    result = gemini_service.collaborate_on_scene("Scene", "Script", "Direction")
+
+    assert result["success"] is True
+    assert result["mode"] == "live"
+    assert "Cloud Run relay" in result["evidence_source"]
 
 
 def test_live_gemini_fails_closed_without_client():

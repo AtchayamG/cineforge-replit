@@ -17,6 +17,8 @@ These dimensions are completely independent: running in a Replit container does 
 | `GEMINI_RUNTIME_MODE` | `""` (falls back to `RUNTIME_MODE`) | Controls Gemini execution: `live` for live Gemini 3.7 Flash calls, `demo` for deterministic scene fixtures. |
 | `RUNTIME_MODE` | `"demo"` | Legacy runtime mode setting; sets default for `GEMINI_RUNTIME_MODE` for backwards compatibility. |
 | `GEMINI_API_KEY` | `""` | Google AI Studio API key (configured in Replit Secrets; never checked into source control). |
+| `GEMINI_RELAY_URL` | `""` | Optional Cloud Run relay URL used when Replit should reach Vertex AI without a service-account key. |
+| `GEMINI_RELAY_TOKEN` | `""` | Shared relay credential stored only in Replit Secrets and the Cloud Run service environment. |
 | `GEMINI_MODEL` | `"gemini-3.7-flash"` | Gemini model identifier for co-direction and visual staging compilation. |
 | `GOOGLE_CLOUD_PROJECT` | `""` | Optional Google Cloud project ID for Vertex AI execution. |
 | `GOOGLE_CLOUD_LOCATION` | `"global"` | Vertex AI region (Gemini 3.7 Flash defaults to `global`). |
@@ -90,15 +92,17 @@ The health check endpoint at `/api/v1/health` reports Gemini configuration, acti
 
 ---
 
-## Unimplemented Architectural Alternative: Cloud Run Proxy Gateway
+## Cloud Run Vertex Relay
 
-As an alternative architectural approach for enterprise or keyless Replit deployments:
+For keyless Replit-to-Vertex execution, the repository includes a minimal relay path:
 
-- A dedicated proxy gateway service could be deployed to **Google Cloud Run** within a Google Cloud project with Vertex AI enabled.
+- The same backend can be deployed to **Google Cloud Run** with Vertex AI enabled.
 - The Cloud Run service would authenticate to Vertex AI using Google Cloud Workload Identity / Application Default Credentials (ADC) to invoke `gemini-3.7-flash` in location `global`.
-- The Replit container would communicate with the Cloud Run gateway over HTTPS with token-based service-to-service authentication, avoiding the need to store long-lived AI Studio API keys in Replit Secrets.
+- Replit calls `/api/v1/forge/relay/collaborate` over HTTPS with `GEMINI_RELAY_TOKEN`; the endpoint uses constant-time token comparison and is unavailable when no token is configured.
+- Replit stores only the narrow relay token, not a Google service-account JSON key. The Cloud Run runtime identity remains the only principal allowed to call Vertex AI.
+- Set `GEMINI_RELAY_URL`, `GEMINI_RELAY_TOKEN`, and `GEMINI_RUNTIME_MODE=live` in Replit. Remove `GEMINI_API_KEY` so the health endpoint reports `auth_type: cloud_run_relay`.
 
-> **Status:** This Cloud Run gateway is strictly an **unimplemented architectural option** for future reference. It is not implemented, configured, or active in this repository.
+The relay is configuration evidence until a real public `/api/v1/forge/collaborate` request returns `runtime_mode: live`; health metadata alone is never presented as proof of successful inference.
 
 ---
 
