@@ -229,6 +229,45 @@ def test_relay_endpoint_requires_credential(monkeypatch):
     assert accepted.json()["success"] is True
 
 
+def test_relay_endpoint_is_unavailable_without_server_credential(monkeypatch):
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "")
+
+    response = TestClient(app).post("/api/v1/forge/relay/collaborate", json={})
+
+    assert response.status_code == 503
+
+
+def test_relay_endpoint_disables_recursive_relay_calls(monkeypatch):
+    from unittest.mock import MagicMock
+
+    collaborate = MagicMock(return_value={"success": True, "mode": "live"})
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "expected-token")
+    monkeypatch.setattr(gemini_service, "collaborate_on_scene", collaborate)
+
+    response = TestClient(app).post(
+        "/api/v1/forge/relay/collaborate",
+        json={},
+        headers={"X-CineForge-Relay-Token": "expected-token"},
+    )
+
+    assert response.status_code == 200
+    assert collaborate.call_args.kwargs["allow_relay"] is False
+
+
+def test_relay_host_disables_direct_public_collaboration(monkeypatch):
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "expected-token")
+    monkeypatch.setattr(settings, "GEMINI_RELAY_URL", "")
+    monkeypatch.setattr(settings, "REPL_ID", "")
+    monkeypatch.setattr(settings, "REPLIT_DOMAINS", "")
+    monkeypatch.setattr(settings, "REPLIT_DEV_DOMAIN", "")
+    monkeypatch.setattr(settings, "REPLIT_DEPLOYMENT", "")
+    monkeypatch.delenv("REPLIT_ENVIRONMENT", raising=False)
+
+    response = TestClient(app).post("/api/v1/forge/collaborate", json={})
+
+    assert response.status_code == 403
+
+
 def test_live_gemini_can_use_authenticated_relay(monkeypatch):
     from unittest.mock import MagicMock
 
@@ -250,6 +289,46 @@ def test_live_gemini_can_use_authenticated_relay(monkeypatch):
     assert result["success"] is True
     assert result["mode"] == "live"
     assert "Cloud Run relay" in result["evidence_source"]
+
+
+def test_live_relay_fails_closed_on_demo_response(monkeypatch):
+    from unittest.mock import MagicMock
+
+    relay_response = MagicMock()
+    relay_response.json.return_value = {
+        "success": True,
+        "mode": "demo",
+        "evidence_source": "Deterministic fixture",
+        "data": {"enhanced_slugline": "DEMO"},
+    }
+    monkeypatch.setattr("app.services.gemini_service.httpx.post", MagicMock(return_value=relay_response))
+    monkeypatch.setattr(settings, "GEMINI_RELAY_URL", "https://relay.example")
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "relay-token")
+    monkeypatch.setattr(gemini_service, "_runtime_mode", "live")
+
+    result = gemini_service.collaborate_on_scene("Scene", "Script", "Direction")
+
+    assert result["success"] is False
+    assert result["mode"] == "live_error"
+    assert "non-live mode: demo" in result["error"]
+
+
+def test_live_relay_error_is_sanitized(monkeypatch):
+    from unittest.mock import MagicMock
+
+    monkeypatch.setattr(
+        "app.services.gemini_service.httpx.post",
+        MagicMock(side_effect=RuntimeError("internal relay URL should not escape")),
+    )
+    monkeypatch.setattr(settings, "GEMINI_RELAY_URL", "https://relay.example")
+    monkeypatch.setattr(settings, "GEMINI_RELAY_TOKEN", "relay-token")
+    monkeypatch.setattr(gemini_service, "_runtime_mode", "live")
+
+    result = gemini_service.collaborate_on_scene("Scene", "Script", "Direction")
+
+    assert result["mode"] == "live_error"
+    assert result["error"] == "Cloud Run Vertex relay communication failed."
+    assert "internal relay URL" not in result["error"]
 
 
 def test_live_gemini_fails_closed_without_client():

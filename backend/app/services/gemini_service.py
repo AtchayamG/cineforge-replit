@@ -62,7 +62,13 @@ class GeminiService:
             self.client = None
             logger.info("No Gemini credentials found. Running in deterministic DEMO fixture mode.")
 
-    def collaborate_on_scene(self, scene_title: str, working_script: str, director_instruction: str) -> Dict[str, Any]:
+    def collaborate_on_scene(
+        self,
+        scene_title: str,
+        working_script: str,
+        director_instruction: str,
+        allow_relay: bool = True,
+    ) -> Dict[str, Any]:
         """
         Executes Gemini-powered scene co-direction and visual staging.
         """
@@ -95,7 +101,7 @@ class GeminiService:
         """
 
         if self.runtime_mode == "live":
-            if settings.GEMINI_RELAY_URL and settings.GEMINI_RELAY_TOKEN:
+            if allow_relay and settings.GEMINI_RELAY_URL and settings.GEMINI_RELAY_TOKEN:
                 try:
                     response = httpx.post(
                         f"{settings.GEMINI_RELAY_URL.rstrip('/')}/api/v1/forge/relay/collaborate",
@@ -109,18 +115,25 @@ class GeminiService:
                     )
                     response.raise_for_status()
                     result = response.json()
-                    if result.get("success"):
+                    if result.get("success") and result.get("mode") == "live":
                         result["evidence_source"] = (
                             f"Google Vertex AI ({self.model_name} live via authenticated Cloud Run relay)"
                         )
-                    return result
+                        return result
+                    return {
+                        "success": False,
+                        "mode": "live_error",
+                        "evidence_source": f"Cloud Run Vertex relay ({self.model_name} live)",
+                        "error": result.get("error") or f"Relay returned non-live mode: {result.get('mode')}",
+                        "data": None,
+                    }
                 except Exception as e:
                     logger.error(f"Cloud Run Gemini relay failed: {e}")
                     return {
                         "success": False,
                         "mode": "live_error",
                         "evidence_source": f"Cloud Run Vertex relay ({self.model_name} live)",
-                        "error": str(e),
+                        "error": "Cloud Run Vertex relay communication failed.",
                         "data": None,
                     }
 

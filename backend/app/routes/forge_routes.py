@@ -25,6 +25,12 @@ async def collaborate_scene(request: CollaborationRequest):
     """
     Produces a Gemini co-direction packet and an in-session review snapshot.
     """
+    if (
+        settings.GEMINI_RELAY_TOKEN
+        and not settings.GEMINI_RELAY_URL
+        and not settings.is_replit_environment
+    ):
+        raise HTTPException(status_code=403, detail="Direct access is disabled on the relay host.")
     return await codirector_agent.collaborate_and_stage(
         scene_title=request.scene_title,
         working_script=request.working_script,
@@ -32,7 +38,7 @@ async def collaborate_scene(request: CollaborationRequest):
     )
 
 @router.post("/relay/collaborate")
-async def relay_collaborate_scene(
+def relay_collaborate_scene(
     request: CollaborationRequest,
     x_cineforge_relay_token: str = Header(default=""),
 ):
@@ -46,6 +52,7 @@ async def relay_collaborate_scene(
         request.scene_title,
         request.working_script,
         request.director_instruction,
+        allow_relay=False,
     )
 
 @router.get("/replit/environment")

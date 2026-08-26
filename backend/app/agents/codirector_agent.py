@@ -1,3 +1,4 @@
+import asyncio
 import logging
 import time
 from typing import Dict, Any
@@ -29,7 +30,12 @@ class CoDirectorAgent:
         start = time.time()
         
         # Step 1: Gemini collaborative co-direction
-        gemini_res = gemini_service.collaborate_on_scene(scene_title, working_script, director_instruction)
+        gemini_res = await asyncio.to_thread(
+            gemini_service.collaborate_on_scene,
+            scene_title,
+            working_script,
+            director_instruction,
+        )
         if not gemini_res.get("success"):
             return {
                 "agent": self.name,

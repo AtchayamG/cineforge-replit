@@ -102,6 +102,8 @@ For keyless Replit-to-Vertex execution, the repository includes a minimal relay 
 - Replit stores only the narrow relay token, not a Google service-account JSON key. The Cloud Run runtime identity remains the only principal allowed to call Vertex AI.
 - Set `GEMINI_RELAY_URL`, `GEMINI_RELAY_TOKEN`, and `GEMINI_RUNTIME_MODE=live` in Replit. Remove `GEMINI_API_KEY` so the health endpoint reports `auth_type: cloud_run_relay`.
 
+Cloud Run must set `GEMINI_RELAY_TOKEN`, `GEMINI_RUNTIME_MODE=live`, `GOOGLE_CLOUD_PROJECT=atlas-495807`, `GOOGLE_CLOUD_LOCATION=global`, and `GEMINI_MODEL=gemini-3.7-flash`. It must not set `GEMINI_RELAY_URL`; this prevents relay recursion. With this receiver configuration, the ordinary `/api/v1/forge/collaborate` route is disabled and only the token-protected relay endpoint can invoke Vertex AI.
+
 The relay is configuration evidence until a real public `/api/v1/forge/collaborate` request returns `runtime_mode: live`; health metadata alone is never presented as proof of successful inference.
 
 ---
