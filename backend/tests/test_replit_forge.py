@@ -139,3 +139,7 @@ def test_repl_slug_is_not_fabricated_off_replit():
     status = replit_service.get_replit_status()
     if not status["is_replit_cloud"]:
         assert status["repl_slug"] == "local"
+
+
+def test_vertex_default_location_supports_gemini_37():
+    assert settings.GOOGLE_CLOUD_LOCATION == "global"

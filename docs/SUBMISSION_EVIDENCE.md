@@ -3,7 +3,7 @@
 | Official requirement | Evidence | Status | Truthful note |
 |---|---|---:|---|
 | Functional web app | `backend/app/main.py`, `backend/app/static/index.html`; https://cineforge-replit--atchayamganesh.replit.app | PASS | Public UI, API workflow, snapshot retrieval, and health endpoint verified. |
-| Google AI used at runtime | `backend/app/services/gemini_service.py` | IMPLEMENTED | Official `google-genai>=2.19.0,<3` call to current default `gemini-3.7-flash`; authenticated 3.7 smoke evidence must be recorded separately. |
+| Google AI used at runtime | `backend/app/services/gemini_service.py`; `docs/evidence/GEMINI_37_VERTEX_RUNTIME_SMOKE.md` | PASS (LIVE MODEL PROOF) | Official `google-genai>=2.19.0,<3` call to current default `gemini-3.7-flash`; an authenticated Vertex AI smoke returned HTTP 200 from `global`. This does not claim the public Replit deployment is configured for live mode. |
 | Built using Replit Agent | `docs/assets/replit-agent-evidence.jpg`; pushed commits `9dd513a` and `163d7d4` | PASS | Replit Agent added the snapshot retrieval endpoint/UI/tests and recorded an authentic checkpoint; a later independent hardening pass expanded the suite to 14 tests. |
 | Hosted directly on Replit | https://cineforge-replit--atchayamganesh.replit.app; `docs/assets/replit-published-app.jpg` | PASS | Public deployment was verified outside the editor; `/api/v1/health` reports Replit runtime, published state, public URL, and demo mode. |
 | Replit runtime integration | `.replit`, `replit.nix`, `replit_environment_service.py` | PASS (CODE) | Reads `REPLIT_DOMAINS`, `REPLIT_DEV_DOMAIN`, and `REPLIT_DEPLOYMENT`; no fabricated cloud state. |
