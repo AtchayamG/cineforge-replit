@@ -41,7 +41,7 @@ async def serve_ui():
     return {
         "service": settings.PROJECT_NAME,
         "track": settings.TRACK,
-        "mode": settings.RUNTIME_MODE,
+        "mode": settings.GEMINI_RUNTIME_MODE,
         "status": "healthy",
         "docs": "/docs"
     }
@@ -52,10 +52,14 @@ async def health_check():
         "status": "healthy",
         "service": settings.PROJECT_NAME,
         "track": settings.TRACK,
-        "runtime_mode": settings.RUNTIME_MODE,
+        "runtime_mode": settings.GEMINI_RUNTIME_MODE,
+        "gemini_runtime_mode": settings.GEMINI_RUNTIME_MODE,
         "providers": {
             "google_gemini": {
+                "mode": settings.GEMINI_RUNTIME_MODE,
                 "configured": settings.is_gemini_configured,
+                "auth_type": settings.gemini_auth_type,
+                "auth_evidence": settings.gemini_auth_evidence,
                 "model": settings.GEMINI_MODEL
             },
             "replit_environment": {

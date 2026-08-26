@@ -1,6 +1,7 @@
 import logging
 import time
 from typing import Dict, Any
+from app.config import settings
 from app.services.gemini_service import gemini_service
 from app.services.replit_environment_service import replit_service
 
@@ -16,6 +17,14 @@ class CoDirectorAgent:
         self.name = "CoDirectorAgent"
         self.role = "Replit Collaborative AI Co-Director"
 
+    @property
+    def gemini_runtime_mode(self) -> str:
+        return settings.GEMINI_RUNTIME_MODE
+
+    @property
+    def runtime_mode(self) -> str:
+        return settings.GEMINI_RUNTIME_MODE
+
     async def collaborate_and_stage(self, scene_title: str, working_script: str, director_instruction: str) -> Dict[str, Any]:
         start = time.time()
         
@@ -26,7 +35,8 @@ class CoDirectorAgent:
                 "agent": self.name,
                 "scene_title": scene_title,
                 "status": "LIVE_ERROR",
-                "runtime_mode": gemini_res.get("mode"),
+                "runtime_mode": gemini_res.get("mode", "live_error"),
+                "gemini_runtime_mode": self.gemini_runtime_mode,
                 "gemini_evidence_source": gemini_res.get("evidence_source"),
                 "error": gemini_res.get("error", "Gemini collaboration failed."),
                 "measured_latency_ms": round((time.time() - start) * 1000, 2)
@@ -44,9 +54,9 @@ class CoDirectorAgent:
             "agent": self.name,
             "scene_title": scene_title,
             "status": "REVIEW_PACKET_READY",
-            # The mode that actually executed, which can differ from the configured
-            # RUNTIME_MODE when no Gemini client could be initialized.
+            # The mode that actually executed
             "runtime_mode": gemini_res.get("mode"),
+            "gemini_runtime_mode": self.gemini_runtime_mode,
             "gemini_collaboration": scene_data,
             "gemini_evidence_source": gemini_res.get("evidence_source"),
             "replit_staging": stage_res,

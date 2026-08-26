@@ -14,13 +14,32 @@ class GeminiService:
     and instantaneous visual staging prompt compilation.
     """
     def __init__(self):
-        self.api_key = settings.GEMINI_API_KEY
-        self.project = settings.GOOGLE_CLOUD_PROJECT
-        self.location = settings.GOOGLE_CLOUD_LOCATION
         self.model_name = settings.GEMINI_MODEL
-        self.runtime_mode = settings.RUNTIME_MODE
+        self._runtime_mode: Optional[str] = None
         self.client = None
         self._init_client()
+
+    @property
+    def runtime_mode(self) -> str:
+        if self._runtime_mode is not None:
+            return self._runtime_mode
+        return settings.GEMINI_RUNTIME_MODE
+
+    @runtime_mode.setter
+    def runtime_mode(self, value: Optional[str]):
+        self._runtime_mode = value.lower() if value else None
+
+    @property
+    def api_key(self) -> str:
+        return settings.GEMINI_API_KEY
+
+    @property
+    def project(self) -> str:
+        return settings.GOOGLE_CLOUD_PROJECT
+
+    @property
+    def location(self) -> str:
+        return settings.GOOGLE_CLOUD_LOCATION
 
     def _init_client(self):
         if self.api_key or (self.project and self.location):
@@ -32,8 +51,10 @@ class GeminiService:
                     self.client = genai.Client(vertexai=True, project=self.project, location=self.location)
                 logger.info(f"Initialized Google GenAI Client with model: {self.model_name} (Mode: LIVE)")
             except Exception as e:
-                logger.warning(f"Could not initialize google-genai client ({e}). Running in demo mode.")
+                self.client = None
+                logger.warning(f"Could not initialize google-genai client ({e}).")
         else:
+            self.client = None
             logger.info("No Gemini credentials found. Running in deterministic DEMO fixture mode.")
 
     def collaborate_on_scene(self, scene_title: str, working_script: str, director_instruction: str) -> Dict[str, Any]:
@@ -68,7 +89,21 @@ class GeminiService:
         }}
         """
 
-        if self.client and self.runtime_mode == "live":
+        if self.runtime_mode == "live":
+            # Attempt lazy init if credentials were provided after startup
+            if self.client is None and settings.is_gemini_configured:
+                self._init_client()
+
+            if not self.client:
+                logger.error("Live Gemini requested, but Gemini client is uninitialized.")
+                return {
+                    "success": False,
+                    "mode": "live_error",
+                    "evidence_source": f"Google GenAI API ({self.model_name} live - unconfigured)",
+                    "error": "Live Gemini mode requested but Gemini client is uninitialized (missing API key or Vertex credentials).",
+                    "data": None
+                }
+
             try:
                 response = self.client.models.generate_content(
                     model=self.model_name,
@@ -89,13 +124,14 @@ class GeminiService:
                 }
             except Exception as e:
                 logger.error(f"Gemini live scene collaboration failed: {e}")
-                if not settings.ENABLE_MOCK_FALLBACK:
-                    return {
-                        "success": False,
-                        "mode": "live_error",
-                        "error": str(e),
-                        "data": None
-                    }
+                # Fail closed: never silently fall back to fixtures in live mode!
+                return {
+                    "success": False,
+                    "mode": "live_error",
+                    "evidence_source": f"Google GenAI API ({self.model_name} live)",
+                    "error": str(e),
+                    "data": None
+                }
 
         # Deterministic Demo Mode (Local Fixture)
         latency_ms = max(int((time.time() - start_time) * 1000), 24)
