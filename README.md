@@ -47,7 +47,7 @@ http://localhost:8004/
 ```bash
 cd backend
 python -m pytest -v
-# Verified: 14 tests passing.
+# Verified: 30 tests passing.
 ```
 
 ---

@@ -41,7 +41,7 @@ To enable live Gemini 3.7 Flash generation on Replit:
 ### Truthfulness & Zero-Secret Guarantee
 - **No secrets or credentials are baked into the repository, git history, or published assets.**
 - **Never claim a secret or live call exists** unless genuinely configured in the host environment.
-- In the public sandbox or default checkout where no `GEMINI_API_KEY` is configured, `GEMINI_RUNTIME_MODE` defaults to `demo`, executing deterministic screenplay co-direction fixtures with explicit metadata.
+- A default checkout with no credential or relay configuration starts in `demo` and serves deterministic screenplay co-direction fixtures with explicit metadata. The current public Replit deployment is separately verified in `live` mode through the authenticated Cloud Run relay described below.
 
 ---
 
@@ -104,7 +104,7 @@ For keyless Replit-to-Vertex execution, the repository includes a minimal relay 
 
 Cloud Run must set `GEMINI_RELAY_TOKEN`, `GEMINI_RUNTIME_MODE=live`, `GOOGLE_CLOUD_PROJECT=atlas-495807`, `GOOGLE_CLOUD_LOCATION=global`, and `GEMINI_MODEL=gemini-3.7-flash`. It must not set `GEMINI_RELAY_URL`; this prevents relay recursion. With this receiver configuration, the ordinary `/api/v1/forge/collaborate` route is disabled and only the token-protected relay endpoint can invoke Vertex AI.
 
-The relay is configuration evidence until a real public `/api/v1/forge/collaborate` request returns `runtime_mode: live`; health metadata alone is never presented as proof of successful inference.
+The relay was verified on 2026-08-27 with a real public `/api/v1/forge/collaborate` request returning `runtime_mode: live`, `gemini_runtime_mode: live`, `REVIEW_PACKET_READY`, and a structured six-part review packet. The same browser run created and retrieved an in-session review snapshot; health metadata alone is not used as inference proof.
 
 ---
 
