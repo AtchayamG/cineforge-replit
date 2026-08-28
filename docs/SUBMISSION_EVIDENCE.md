@@ -10,6 +10,7 @@
 | Honest live/demo separation | `config.py`, `gemini_service.py`, judge UI | PASS | Demo fixtures are labeled. Live failures do not silently become demo output by default. |
 | Public open-source repository | https://github.com/AtchayamG/cineforge-replit + root `LICENSE` | PASS | Public repository with an OSI-approved MIT license at repository root. |
 | Public video under three minutes | https://youtu.be/7SPam_1jiV4; `docs/VIDEO_DEMO_SCRIPT.md` | PASS | The final 2:53 Gemini 3.7 edition is public at 1920x1080 with Sonia narration, burned-in English captions, and a custom thumbnail. |
+| Supplemental cinematic evidence | `docs/evidence/CINEMATIC_EVIDENCE.md`; `docs/evidence/cinematic_evidence_manifest.json` | PASS (PRE-GENERATED ARTIFACT) | 7-shot 56-second 1080p high-altitude nature adventure film (*The Last High Pass / உயர் கணவாய்*) generated with Veo 3.1 Fast, demonstrating character likeness locking (Atchayam's likeness), geographic continuity, and pure native environmental Foley. Supplemental pre-generated artifact, not synthesized inside Replit runtime or Replit Agent. |
 | Automated verification | `python -m pytest -q` | PASS | 30 tests pass, including runtime-mode labeling, relay authentication and failure handling, bounded snapshot retention, CORS safety, snapshot retrieval, and missing-ID behavior. |
 
 ## Claims intentionally removed

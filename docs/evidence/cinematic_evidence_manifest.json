@@ -1,0 +1,53 @@
+{
+  "evidence_type": "supplemental_pregenerated_cinematic_evidence",
+  "production_title": "The Last High Pass (\u0b89\u0baf\u0bb0\u0bcd \u0b95\u0ba3\u0bb5\u0bbe\u0baf\u0bcd)",
+  "track_number": 5,
+  "model": "veo-3.1-fast-generate-001",
+  "generation_platform": "Google Cloud Vertex AI",
+  "total_duration_seconds": 56.03,
+  "total_shots": 7,
+  "resolution": "1920x1080",
+  "fps": 24,
+  "audio_format": "AAC 48kHz stereo (Native Veo Foley)",
+  "master_filename": "the_last_high_pass_master_film.mp4",
+  "master_sha256": "9547202f690ccef638747908542babb58500e1ff35cc68c69e4d8c04c2f1f69a",
+  "public_asset_url": "__PENDING_PUBLIC_ASSET_URL__",
+  "truthful_disclaimer": "Supplemental pre-generated cinematic evidence created ahead of time with Veo 3.1 Fast on Vertex AI. The hosted application streams a fixed verified artifact; it does not generate this video on request.",
+  "shots": [
+    {
+      "shot": 1,
+      "title": "The Forest Ascent",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 2,
+      "title": "The Glacial River Crossing",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 3,
+      "title": "The Wildflower Ridge",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 4,
+      "title": "The High Cliffside Traverse",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 5,
+      "title": "The Gathering Clouds",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 6,
+      "title": "The Summit Ridge Arrival",
+      "duration_s": 8.0
+    },
+    {
+      "shot": 7,
+      "title": "The Grand Horizon",
+      "duration_s": 8.0
+    }
+  ]
+}
