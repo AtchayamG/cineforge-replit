@@ -3,10 +3,14 @@
 ## Production Overview
 - **Title:** *The Last High Pass (உயர் கணவாய்)*
 - **Track:** Track 5 — Replit Track (*CineForge Replit*)
-- **Duration:** 56.03 seconds (7 continuous 8-second shots)
-- **Format:** 1920×1080 @ 24 fps (H.264 / AAC 48 kHz stereo)
-- **Audio:** Pure Native Veo environmental Foley (forest footsteps, roaring glacial torrent, whistling alpine wind, loose shale, deep mountain quietude)
-- **Generation Model:** `veo-3.1-fast-generate-001` on Google Cloud Vertex AI
+- **Duration:** 56.000 seconds video stream (1,344 frames @ 24 fps) | 56.031 seconds container
+- **Format:** 1920×1080 @ 24 fps (H.264 / AAC 48 kHz stereo, EBU R128 Compliant: -16.4 LUFS, -1.0 dBTP peak)
+- **Audio & Score:** Google Vertex AI **Lyria 3 Pro** (`lyria-3-pro-preview`, Candidate 5B — “Breath of the Summit”) mixed over reconstructed pristine mountain summit Foley (Shot 07 audio repaired; competing synth BGM removed)
+- **Generation Models:** `veo-3.1-fast-generate-001` (video) & `lyria-3-pro-preview` (score) on Google Cloud Vertex AI (project `atlas-495807`)
+- **Scored Presentation Master:** `evidence_media/Track5_CineForge/final/the_last_high_pass_scored_final.mp4`
+- **Scored Master SHA-256:** `b4372ea284f66ac0116741c59de2335e06a2b628c5cd6c939ecb93776729accc`
+- **Video Bitstream SHA-256:** `db75fa69f4af7925f3246a10e57a5a4092fdbe605ce7efc490fa37f279c032bc` (100% verified stream-copy match)
+- **Foley-Only Reference Master:** `evidence_media/Track5_CineForge/final/the_last_high_pass_foley_only_master.mp4` (`b8565b90f41c305b0d06fb46960cfecfa010e6a3fa990dae560f772ba65c71db`)
 - **Master Reel SHA-256:** `9547202f690ccef638747908542babb58500e1ff35cc68c69e4d8c04c2f1f69a`
 - **Public Asset URL:** `__PENDING_PUBLIC_ASSET_URL__`
 
