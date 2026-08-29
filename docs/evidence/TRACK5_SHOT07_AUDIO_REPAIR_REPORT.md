@@ -38,7 +38,7 @@ In accordance with strict portfolio evidence guidelines:
 | Asset | Path | Size | SHA-256 |
 | :--- | :--- | :--- | :--- |
 | **Scored Presentation Master** | `evidence_media/Track5_CineForge/final/the_last_high_pass_scored_final.mp4` | 134,168,588 bytes | `b4372ea284f66ac0116741c59de2335e06a2b628c5cd6c939ecb93776729accc` |
-| **Foley-Only Reference Master** | `evidence_media/Track5_CineForge/final/the_last_high_pass_foley_only_master.mp4` | 133,936,769 bytes | `b8565b90f41c305b0d06fb46960cfecfa010e6a3fa990dae560f772ba65c71db` |
+| **Foley-Only Reference Master** | `evidence_media/Track5_CineForge/final/the_last_high_pass_foley_only_master.mp4` | 133,911,928 bytes | `eeba8a48ad6bcb7f3b9b1175c0d22828e86505f0910047a32d03ba98489cb822` |
 | **Repaired Native Foley Stem** | `evidence_media/Track5_CineForge/final/the_last_high_pass_repaired_native_foley.wav` | 16,136,876 bytes | `6f35a0921477aa2f89f2a03cfc23eefc65fae3458c9735d4610b271dca7e3aee` |
 | **Isolated Original Score Stem** | `evidence_media/Track5_CineForge/final/the_last_high_pass_original_score.wav` | 16,136,876 bytes | `1d9c36c9ee40212da6f610476839352e008d51a0ffca87c2b5368a4ec5b87ee8` |
 | **Shot 07 Comparison Clip** | `evidence_media/Track5_CineForge/qa/track5_shot07_audio_repair_comparison.mp4` | 37,140,574 bytes | `06b0f8d2bc01d2ff3a027fb580664b5d2357a298d287a40502c030f42dadc513` |
