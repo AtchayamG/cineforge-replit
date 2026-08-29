@@ -39,7 +39,7 @@ The biggest challenge was separating a compelling product story from unsupported
 - A deployable, inspectable Replit-native web app.
 - Explicit demo/live provenance in every response.
 - A regression suite that checks runtime truthfulness and prevents fabricated public URLs from returning.
-- Authentic Replit Agent and Replit Publishing evidence, with 30 passing tests and a public `.replit.app` deployment running Gemini live through a protected Cloud Run relay.
+- Authentic Replit Agent and Replit Publishing evidence, with 31 passing tests and a public `.replit.app` deployment running Gemini live through a protected Cloud Run relay.
 
 ## What we learned
 
