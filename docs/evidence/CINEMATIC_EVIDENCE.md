@@ -12,7 +12,7 @@
 - **Video Bitstream SHA-256:** `db75fa69f4af7925f3246a10e57a5a4092fdbe605ce7efc490fa37f279c032bc` (100% verified stream-copy match)
 - **Foley-Only Reference Master:** `evidence_media/Track5_CineForge/final/the_last_high_pass_foley_only_master.mp4` (`eeba8a48ad6bcb7f3b9b1175c0d22828e86505f0910047a32d03ba98489cb822`)
 - **Master Reel SHA-256:** `9547202f690ccef638747908542babb58500e1ff35cc68c69e4d8c04c2f1f69a`
-- **Public Asset URL:** `__PENDING_PUBLIC_ASSET_URL__`
+- **Public Asset URL:** `https://youtu.be/Gjy7rE5FcLI`
 
 ---
 
